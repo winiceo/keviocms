@@ -1,6 +1,6 @@
 <template>
 
-    <div>
+    <div id="tool-panel">
 
 
         <m-tabs type="card" @tab-click="handleClick">
