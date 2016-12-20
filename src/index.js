@@ -6,10 +6,12 @@ import App from 'app'
 import configRouter from 'route.config';
 import VueRouter from 'vue-router'
 
+import FastClick from 'fastclick'
+FastClick.attach(window.document.body)
 
 
 // import router from './router'
-  import { sync } from 'vuex-router-sync'
+import { sync } from 'vuex-router-sync'
 // sync(store, router)
 
 
@@ -45,6 +47,12 @@ K.initialize("kevioapp", 'pmker.com');
 K.serverURL = 'http://localhost:4000/api/parse'
 window.Kevio=window.K=K;
 Vue.mixin({
+  data:function(){
+    return {
+      app:{}
+
+    }
+  },
   methods: {
 
     _init: function (callback) {
@@ -52,6 +60,13 @@ Vue.mixin({
     }
   },
   mounted(){
+    var _vm=this;
+    if(_vm.$route&&_vm.$route.query){
+      if(_vm.$route.query.bid){
+        _vm.$set(this.app,'bid',_vm.$route.query.bid)
+
+      }
+    }
 
     this._init();
   }

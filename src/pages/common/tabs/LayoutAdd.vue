@@ -169,7 +169,7 @@
     </div>
 </template>
 <script>
-    import Parse from "parse"
+
     export default {
         data() {
             return {
@@ -189,8 +189,7 @@
             };
         },
         mounted(){
-            Parse.initialize("kevioapp", 'pmker.com');
-            Parse.serverURL = 'http://localhost:4000/api/parse'
+
             var item=this.$parent.$parent.item;
             if(item){
 
@@ -221,12 +220,12 @@
                     var file = fileUploadControl.files[0];
                     var name = "photo.jpg";
 
-                    var parseFile = new Parse.File(name, file);
+                    var parseFile = new K.File(name, file);
                     parseFile.save().then(function (file) {
                         console.log(file)
                     }, function (error) {
                         console.log(error)
-                        // The file either could not be read, or could not be saved to Parse.
+                        // The file either could not be read, or could not be saved to K.
                     });
                 }
             },
@@ -248,12 +247,12 @@
                 // console.log(this)
 
 
-                this.parseFile = new Parse.File(file.name, file, file.type);
+                this.parseFile = new K.File(file.name, file, file.type);
                 this.parseFile.save().then(function (file) {
                     _vm.handleUPloadSuccess()
                 }, function (error) {
                     console.log(error)
-                    // The file either could not be read, or could not be saved to Parse.
+                    // The file either could not be read, or could not be saved to K.
                 });
                 return false;
             },
@@ -270,7 +269,7 @@
                 var _vm = this;
                 this.$refs.ruleForm.validate((valid) => {
                     if (valid) {
-                        var WebSite = Parse.Object.extend("an_layout");
+                        var WebSite = K.Object.extend("an_layout");
                         var website = new WebSite();
 
                         website.set(_vm.ruleForm);
@@ -295,6 +294,12 @@
                                     _vm.$emit('item_add', web.toJSON())
                                     _vm.$parent.$parent.getdata();
                                     _vm.$parent.$parent.$refs.webDialog.close()
+
+                                    _vm.$notify({
+                                         title: '成功',
+                                         message: '保存成功',
+                                         type: 'success'
+                                    });
                                     _vm.handleReset()
                                 }catch (e){
                                     alert(e)

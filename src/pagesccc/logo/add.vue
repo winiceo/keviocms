@@ -166,7 +166,7 @@
                         website.set(_vm.webFrom);
 
 
-                        website.save(null, {
+                        website.save( {
                             success: function (web) {
                                 // Execute any logic that should take place after the object is saved.
 

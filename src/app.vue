@@ -4,6 +4,11 @@
         <aside id="content" class="web">
             <x-content></x-content>
             <x-canvas></x-canvas>
+            <router-view
+                    keep-alive
+                    transition="fade"
+                    transition-mod="out-in">
+            </router-view>
         </aside>
 
          <n-progress parent=".app-wrapper"></n-progress>
@@ -20,8 +25,18 @@ import NProgress from 'pages/common/NProgress'
 
 
 export default {
-  computed: {
-    alert()
+    data:function(){
+            return {
+
+
+            }
+    },
+    methods:{
+
+        _init(){
+
+
+        }
   },
   components: {
     XHeader,
