@@ -1,18 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as actions from './actions'
-import * as getters from './getters'
-import collects from './modules/collects'
-
-import global from './modules/global'
-
+import routeLoading from './modules/route'
+import config from './modules/global-config'
+import user from './modules/user'
+import bill from './modules/bill'
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-    actions,
-    getters,
-    modules: {
-        global,
-        collects
-    }
+const store = new Vuex.Store({
+  strict: process.env.NODE_ENV !== 'production',
+  modules: {
+    user,
+    config,
+    bill,
+    routeLoading
+  }
 })
+
+export default store

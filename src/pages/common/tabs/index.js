@@ -1,16 +1,16 @@
  import Layout from './Layout.vue';
- import DataForm from './Data.vue';
+ //import DataForm from './DataForm.vue';
  import Statistics from './Statistics.vue';
- import Setting from './Setting.vue';
+ //import Setting from './Setting.vue';
 
 
 
 const Leven = {
 
   Layout,
-  DataForm ,
+  //DataForm ,
   Statistics,
-  Setting
+  //Setting
 }
 
 module.exports = Leven

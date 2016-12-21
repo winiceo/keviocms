@@ -1,0 +1,95 @@
+import Vue from 'vue'
+import Validator from 'plugins/validator'
+ import IScroll from 'plugins/iScroll'
+import App from './app.vue'
+import routes from './router/index';
+import VueRouter from 'vue-router'
+import { sync } from 'vuex-router-sync'
+
+import K from 'parse';
+
+import store from 'store3'
+
+import './http'
+
+
+import './locale'
+
+import K from 'parse';
+
+import ElementUI from 'elementUi'
+import 'elementUi/theme-default/index.css'
+
+import FastClick from 'fastclick'
+FastClick.attach(window.document.body)
+
+//Vue.component('side-nav', SideNav);
+Vue.config.debug = true
+
+
+K.initialize("kevioapp", 'pmker.com');
+K.serverURL = 'http://localhost:4000/api/parse'
+window.Kevio=window.K=K;
+Vue.mixin({
+  data:function(){
+    return {
+      app:{}
+
+    }
+  },
+  methods: {
+
+    _init: function (callback) {
+
+    }
+  },
+  mounted(){
+    var _vm=this;
+    if(_vm.$route&&_vm.$route.query){
+      if(_vm.$route.query.bid){
+        _vm.$set(this.app,'bid',_vm.$route.query.bid)
+
+      }
+    }
+
+    this._init();
+  }
+})
+
+//sync(store, router)
+
+
+Vue.use(ElementUI)
+
+
+Vue.use(Validator)
+
+Vue.use(IScroll);
+
+Vue.use(VueRouter);
+
+
+
+const router = new VueRouter({
+  mode: 'hash',
+  base: __dirname,
+  routes
+});
+
+
+// router.afterEach(route => {
+//   const data = title[route.meta.lang];
+//   for (let val in data) {
+//     if (new RegExp('^' + val, 'g').test(route.name)) {
+//       document.title = data[val];
+//       return;
+//     }
+//   }
+//   document.title = 'Element';
+// });
+
+new Vue({ // eslint-disable-line
+  render: h => h(entry),
+  router,
+  store
+}).$mount('#app');

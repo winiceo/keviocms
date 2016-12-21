@@ -4,11 +4,7 @@
         <aside id="content" class="web">
             <x-content></x-content>
             <x-canvas></x-canvas>
-            <router-view
-                    keep-alive
-                    transition="fade"
-                    transition-mod="out-in">
-            </router-view>
+
         </aside>
 
          <n-progress parent=".app-wrapper"></n-progress>
@@ -52,6 +48,7 @@ export default {
     @import "assets/css/animate"
     @import "assets/fonts/iconfont.css"
     @import "assets/css/flex"
+
     ::-webkit-scrollbar
         width 4px
         height 4px
@@ -71,6 +68,12 @@ export default {
         top: 50px;
         min-height: 520px;
         color: #9d9d9d;
+    }
+    .fade-transition {
+        transition: opacity .3s ease;
+    }
+    .fade-enter, .fade-leave {
+        opacity: 0;
     }
 
 </style>

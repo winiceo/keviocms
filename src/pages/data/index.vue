@@ -3,9 +3,13 @@
     <div class="layoutContent">
         <el-row class='headBar'>
             <el-col :span="12">
-                <el-button type="primary" icon="plus" @click.native="dialogVisible = true">管理模板</el-button>
+                <el-button type="primary" icon="plus" @click.native="dialogVisible = true">添加数据</el-button>
             </el-col>
-            <el-col :span="12"> </el-col>
+            <el-col :span="12">
+                <router-link :to="{ name: 'form_setting', params: { tag: 1 }}">1</router-link>
+
+                <el-button type="primary" icon="setting" @click="setting">设置字段</el-button>
+            </el-col>
         </el-row>
 
         <el-row :gutter="10" class='listrow'>
@@ -103,7 +107,7 @@
 <script>
 
 
-import AddForm from './LayoutAdd'
+import AddForm from './DataFormAdd'
 export default {
 
         data(){
@@ -125,6 +129,12 @@ export default {
 
             _init: function (callback) {
                 this.getdata();
+            },
+            setting:function(){
+
+                var path='/dataform/setting'
+                this.$router.go(path)
+
             },
             select:function(index){
                 console.log(index)

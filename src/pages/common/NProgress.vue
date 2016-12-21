@@ -29,6 +29,18 @@ export default {
 </script>
 <style lang="stylus">
 @import "nprogress/nprogress.css"
-#nprogress .spinner
-  display none
+#nprogress
+    .bar
+        background: white;
+
+        position: fixed;
+        z-index: 1031;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+    .spinner
+        display none
 </style>

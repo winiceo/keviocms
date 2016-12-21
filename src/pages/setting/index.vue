@@ -1,25 +1,25 @@
 <template>
 
     <el-card class="box-card">
-
+        {{sets||json}}
         <div slot="header" class="clearfix">
             <span style="line-height: 36px;">设置</span>
         </div>
-        <el-form :model="item" :rules="rules" ref="item" label-width="100px" class="demo-ruleForm">
+        <el-form :model="sets" :rules="rules" ref="sets" label-width="100px" class="demo-ruleForm">
             <el-form-item label="项目标题" prop="title">
-                <el-input v-model="item.title"></el-input>
+                <el-input v-model="sets.title"></el-input>
             </el-form-item>
 
             <el-form-item label="是否公开" prop="public">
-                <el-switch on-text="" off-text="" v-model="item.public"></el-switch>
+                <el-switch on-text="" off-text="" v-model="sets.public"></el-switch>
             </el-form-item>
 
             <el-form-item label="code" prop="description">
-                <el-input type="textarea" v-model="item.code" rows=6></el-input>
+                <el-input type="textarea" v-model="sets.code"></el-input>
             </el-form-item>
 
             <el-form-item label="备注描述" prop="description">
-                <el-input type="textarea" v-model="item.description" rows=6></el-input>
+                <el-input type="textarea" v-model="sets.description"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="handleSubmit">更新</el-button>
@@ -36,22 +36,25 @@
 </style>
 <script>
 import K from 'parse';
+import { mapGetters, mapActions } from 'vuex'
+import Emitter from 'kevio/lib/emitter';
 
 var Bill = K.Object.extend("bill");
 
 export default {
     data() {
       return {
+        sets:{
 
+                  title: '',
+                  code:'',
+
+                  public: true,
+
+                  desc: ''
+         },
         bill:{},
-        item: {
-          name: '',
-          code:'',
 
-          public: true,
-
-          desc: ''
-        },
         rules: {
           title: [
             { required: true, message: '请输入名称', trigger: 'blur' },
@@ -64,12 +67,35 @@ export default {
         }
       };
     },
+    mixins: [Emitter],
+    computed: {
+        ...mapGetters(['storebill','storebid','storebilljson'])
+    },
+    
     methods: {
+      ...mapActions(['getBill','updateBid','updateBillJson']),
+      ooo(nb,ob){
+        this.$store.dispatch('updateBillJson',nb)
+        //this.updateBillJson(nb)
+      },
       _init: function (callback) {
+            var _vm=this;
+            this.updateBid(this.app.bid)
+            this.getBill().then(function(data) {
 
-            this.getdata();
+                if(data){
+                  _vm.bill=data;
+                  _vm.sets=_vm.bill.toJSON() 
+
+                }
+            }, function(err) {
+                console.log(err);
+            });
+              //console.log(this.getBill())
+           // this.sets=this.bill.toJSON() 
 
       },
+      
       getdata(){
             var _vm=this;
 
@@ -80,7 +106,7 @@ export default {
             query.first({
               success: function(result) {
                  _vm.bill=result
-                 _vm.item=result.toJSON()
+                 _vm.sets=result.toJSON()
 
               },
               error: function(error) {
@@ -91,14 +117,14 @@ export default {
 
       },
       handleReset() {
-        this.$refs.item.resetFields();
+        this.$refs.sets.resetFields();
       },
       handleSubmit(ev) {
       var _vm=this;
-        this.$refs.item.validate((valid) => {
+        this.$refs.sets.validate((valid) => {
           if (valid) {
 
-            _vm.bill.set(_vm.item)
+            _vm.bill.set(_vm.sets)
             _vm.bill.save();
             _vm.$notify({
                               title: '成功',
@@ -107,14 +133,25 @@ export default {
             });
 
           } else {
-            alert(4444)
+
             console.log('error submit!!');
             return false;
           }
         });
       }
-    }
+    },
+    watch:{
+        'sets':{
+          deep:true,
+          handler: function(val, oldVal) {
+            this.ooo(val)
+          }
+        }
+
+  
+    },
   }
+
 
 
 </script>

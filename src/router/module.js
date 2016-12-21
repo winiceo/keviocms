@@ -1,11 +1,18 @@
 export default [
+
+    {
+      path: '/dashboard',
+      component: (resolve) => {
+        require(['pages/home/index.vue'], resolve)
+      }
+    },{
+      path: '/aaaa',
+      component: (resolve) => {
+        require(['pages/form/Setform.vue'], resolve)
+      }
+    },
 //
 // {
-//   path: '/dashboard',
-//   component: (resolve) => {
-//     require(['../view/Dashboard.vue'], resolve)
-//   }
-// }, {
 //   path: '/users',
 //   component: (resolve) => {
 //     require(['../view/UserList.vue'], resolve)

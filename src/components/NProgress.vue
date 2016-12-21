@@ -28,7 +28,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import "../../node_modules/nprogress/nprogress.css"
+@import "nprogress/nprogress.css"
 #nprogress .spinner
   display none
 </style>
