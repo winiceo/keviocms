@@ -1,125 +1,24 @@
 <style>
-    .demo-form {
 
-    .el-select .el-input {
-        width: 360px;
-    }
-
-    .el-form {
-        width: 440px;
-    }
-
-
-    .line {
-        text-align: center;
-    }
-
-    .el-checkbox-group {
-        width: 320px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-
-    &
-    :after,
-
-    &
-    :before {
-        content: ' ';
-        display: table;
-    }
-
-    &
-    :after {
-        clear: both;
-        visibility: hidden;
-        font-size: 0;
-        height: 0;
-    }
-
-    .el-checkbox {
-        float: left;
-        width: 160px;
-        padding-right: 20px;
-        margin: 0;
-        padding: 0;
-
-    +
-    .el-checkbox {
-        margin-left: 0;
-    }
-
-    }
-    }
-    .demo-form-normal {
-        width: 440px;
-    }
-
-    .demo-form-inline {
-
-    .el-input {
-        width: 150px;
-    }
-
-    >
-    * {
-        margin-right: 10px;
-    }
-
-    }
-    .demo-form-stacked {
-        width: 270px;
-
-    .el-select .el-input {
-        width: 100%;
-    }
-
-    }
-    .demo-ruleForm {
-        width: 460px;
-
-    .el-input,
-    .el-textarea {
-        width: auto;
-    }
-
-    .el-select .el-input {
-        width: 360px;
-    }
-
-    }
-    .demo-dynamic {
-
-    .el-input {
-        display: inline-block;
-        margin-right: 10px;
-        width: 270px;
-    }
-
-    }
-    .fr {
-        float: right;
-    }
-
-    }
 
 </style>
 <template>
     <div class="demo-form">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm  ">
-            <el-form-item label="模板名称" prop="name">
-                <el-input v-model="ruleForm.name"></el-input>
+        <el-form :model="item" :rules="rules" ref="item" label-width="100px" class="demo-item  ">
+            <el-form-item label="名称" prop="name">
+                <el-input v-model="item.name"></el-input>
             </el-form-item>
-            <el-form-item label="code" prop="code">
-                <el-input v-model="ruleForm.code"></el-input>
+            <el-form-item label="网址" prop="url">
+                <el-input v-model="item.url"></el-input>
             </el-form-item>
-            <el-form-item label="code" prop="code">
+
+            <el-form-item label="描述" prop="description">
 
                 <el-input
                         type="textarea"
                         :autosize="{ minRows: 2, maxRows: 6}"
                         placeholder="请输入内容"
-                        v-model="ruleForm.html">
+                        v-model="item.description">
                 </el-input>
             </el-form-item>
 
@@ -168,51 +67,58 @@
         </el-form>
     </div>
 </template>
-<script>
+<script type='text/ecmascript-6'>
+    import {mapGetters, mapActions} from 'vuex'
 
     export default {
         data() {
             return {
+                itemdata:{},
+                item:{},
                 uploadTip: true,
-                parseFile:false,
-                ruleForm: {
-                    name: '',
-                    code:'',
-                    html:'',
-                },
+                parseFile: false,
                 rules: {
                     name: [
-                        {required: true, message: '请输入活动名称', trigger: 'blur'}
+                        {required: true, message: '请输入名称', trigger: 'blur'}
                     ]
                 },
                 uploadfile: {}
             };
         },
+        computed: {
+            ...mapGetters(['storebill', 'storebid', 'storebilljson','storekdataitem'])
+        },
+
         mounted(){
-
-            var item=this.$parent.$parent.item;
-            if(item){
-
-                this.parseFile=item.get('picture')
-                if(this.parseFile.url()){
-                  this.handleUPloadSuccess()
-
-                }
-                item=item.toJSON()
-                delete(item.picture)
-                this.ruleForm=item;
-                console.log("===")
-                console.log(this.ruleForm)
-
-
-            }
-
-            //this.ruleForm
-
-
+            //this.itemdata=this.storekdataitem
 
         },
+        watch: {
+            'storekdataitem': {
+                deep: true,
+                handler: function (val, oldVal) {
+
+                    this.boot(val)
+                }
+            }
+        },
         methods: {
+
+            boot(item){
+
+                console.log(item)
+                var _vm = this;
+
+
+                this.parseFile = item.get('picture')
+                if (this.parseFile.url()) {
+                    this.handleUPloadSuccess()
+                }
+                this.item = item.toJSON()
+                console.log(this.item)
+
+
+            },
             upload(){
 
                 var fileUploadControl = $("#profilePhotoFileUpload")[0];
@@ -239,7 +145,8 @@
 
                 this.uploadfile = this.parseFile;
                 this.uploadTip = false;
-                //alert(this.ruleForm)
+                console.log(this.parseFile)
+                //alert(this.item)
 
             },
             handleUPloadBefore(file){
@@ -257,51 +164,51 @@
                 return false;
             },
             handleReset() {
-                this.ruleForm={
+                this.item = {
                     name: '',
-                    code:'',
-                    html:''
-
+                    code: '',
+                    html: '',
+                    bid: this.storebid,
+                    head_img: ''
                 }
-                this.$refs.ruleForm.resetFields();
+                this.uploadTip = true
+                this.$refs.item.resetFields();
             },
             handleSubmit(ev) {
                 var _vm = this;
-                this.$refs.ruleForm.validate((valid) => {
+                this.$refs.item.validate((valid) => {
                     if (valid) {
-                        var WebSite = K.Object.extend("an_layout");
-                        var website = new WebSite();
 
-                        website.set(_vm.ruleForm);
-                        if(_vm.parseFile){
-                            website.set('picture', _vm.parseFile);
+                        _vm.storekdataitem.set(_vm.item);
+                        if (_vm.parseFile) {
+                            _vm.storekdataitem.set('picture', _vm.parseFile);
 
-                        }else{
+                        } else {
                             this.$notify.error({
-                              title: '错误',
-                              message: '请上传图片'
+                                title: '错误',
+                                message: '请上传图片'
                             });
                             return false;
                         }
 
 
-                        website.save(null, {
+                        _vm.storekdataitem.save(null, {
                             success: function (web) {
 
                                 // Execute any logic that should take place after the object is saved.
                                 //console.log(_vm.$parent.$parent.items)
-                                try{
+                                try {
                                     _vm.$emit('item_add', web.toJSON())
                                     _vm.$parent.$parent.getdata();
                                     _vm.$parent.$parent.$refs.webDialog.close()
 
                                     _vm.$notify({
-                                         title: '成功',
-                                         message: '保存成功',
-                                         type: 'success'
+                                        title: '成功',
+                                        message: '保存成功',
+                                        type: 'success'
                                     });
                                     _vm.handleReset()
-                                }catch (e){
+                                } catch (e) {
                                     alert(e)
                                 }
 

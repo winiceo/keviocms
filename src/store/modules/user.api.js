@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { authSocket } from '../../socket'
+//import { authSocket } from '../../socket'
 import { readMulti } from '../../storage'
 import { STORE_KEY_USERNAME, STORE_KEY_ACCESS_TOKEN, STORE_KEY_REFRESH_TOKEN,STORE_BILL_BID,STORE_BILL } from '../../constants'
 
@@ -25,9 +25,9 @@ export function getUserInfo (token) {
         'Authorization': `Bearer ${token}`
       }
     }).then(data => data.json()).then(data => {
-      authSocket(token, () => {
-        console.log('Token authenticated.')
-      })
+      // authSocket(token, () => {
+      //   console.log('Token authenticated.')
+      // })
       resolve(data)
     }).catch(() => {
       resolve({})

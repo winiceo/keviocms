@@ -3,21 +3,23 @@
     <div class="layoutContent">
         <el-row class='headBar'>
             <el-col :span="12">
-                <el-button type="primary" icon="plus" @click.native="dialogVisible = true">添加数据</el-button>
+                <el-button type="primary" icon="plus" @click="add()">添加数据</el-button>
             </el-col>
             <el-col :span="12">
-                <router-link :to="{ name: 'form_setting', params: { tag: 1 }}">1</router-link>
-
                 <el-button type="primary" icon="setting" @click="setting">设置字段</el-button>
             </el-col>
         </el-row>
 
+
         <el-row :gutter="10" class='listrow'>
-            <el-col :span="8" v-for="(item,index) in items"     >
-                <figure :class="[selected==index?'uk-overlay':'']" >
+            <el-col :span="12" v-for="(item,index) in items">
+                <figure :class="[selected==index?'uk-overlay':'']">
                     <div class="uk-panel uk-panel-box" @click="select(index)">
                         <div class="uk-panel-teaser">
-                            <img :src="item.get('picture').url()" >
+
+                            <template v-if='item.get("picture")'>
+                                <img :src="item.get('picture').thumbnailURL(200, 200)" style="height:150px;">
+                            </template>
                             <div style="padding: 14px;">
                                 <span>{{item.get('name')}}</span>
 
@@ -28,164 +30,178 @@
 
 
                     </div>
-                    <figcaption class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-center uk-flex-middle uk-text-center" v-show="selected==index">
+                    <figcaption
+                            class="uk-overlay-panel uk-overlay-background uk-flex uk-flex-center uk-flex-middle uk-text-center"
+                            v-show="selected==index">
 
-                    <div class='overlay-div'><el-button type="primary" icon="edit" @click="edit(item)">编辑</el-button>
-                        <br><br>
-                        <el-button type="primary" icon="delete" @click="remove(item)">删除</el-button>
-                    </div>
-                </figcaption>
+                        <div class='overlay-div'>
+                            <el-button type="primary" icon="edit" @click="edit(item)">编辑</el-button>
+                            <br><br>
+                            <el-button type="primary" icon="delete" @click="remove(item)">删除</el-button>
+                        </div>
+                    </figcaption>
 
                 </figure>
 
 
             </el-col>
         </el-row>
+
         <el-dialog title="添加" v-model="dialogVisible" size="small" ref="webDialog">
-            <AddForm></AddForm>
+            <AddForm ref="addform"></AddForm>
         </el-dialog>
     </div>
 </template>
 
 <style lang="stylus">
- .layoutContent
-     .listrow
-         margin-top: 2px
-         .uk-overlay-panel {
-             position: relative;
-             top: 0;
+    .layoutContent
+        .listrow
+            margin-top: 2px
 
-             left: 0;
-
-             width:100%
-             height:100%
-         }
-         .uk-panel-box
-            background-color:white;
-            border 1px solid  #e7e7e7
-         .overlay-div
-            vertical-align bottom
-            position: absolute;
-            bottom: 10px;
-         .uk-panel-teaser
-            >img
-                width:100%
-                height 120px
-         .uk-overlay-panel {
-             position: absolute;
-             top: 0;
-             bottom: 0;
-             left: 0;
-             right: 0;
-             padding: 20px;
-             color: #fff;
-         }
-
-         .uk-overlay {
-             display: inline-block;
-             position: relative;
-             max-width: 100%;
-             vertical-align: middle;
-             overflow: hidden;
-             -webkit-transform: translateZ(0);
-             margin: 0;
-         }
-
-
-
-     .el-col{
-         margin-bottom: 5px;
-         margin-top: 5px;
-     }
-     .headBar{
-         border-bottom :1px solid #e7e7e7
-     }
+        .el-col {
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .headBar {
+            border-bottom: 1px solid #e7e7e7
+        }
 
     .uk-overlay-background
-        background-color:rgba(0,0,0,0.66);
+        background-color: rgba(0, 0, 0, 0.66);
 </style>
-<script>
+<script type="text/ecmascript-6">
 
 
-import AddForm from './DataFormAdd'
-export default {
+    import AddForm from './add'
+    import {mapGetters, mapActions} from 'vuex'
+
+    export default {
 
         data(){
             return {
-                dialogVisible:false,
-                items:[],
-                selected:-1,
-                item:false
+
+                items: [],
+                selected: -1,
+                item: {
+                    name: '',
+
+                    url: '',
+                    description: ''
+                }
+
+
 
             }
         },
         components: {
+            AddForm,
+        },
+        computed: {
+            ...mapGetters(['storebilldata', 'getState', 'storebid']),
+            dialogVisible: {
+                get(){
+                    // /console.error(this.$store.state.common.dialogVisible)
+                    return this.$store.getters.getState.dialogVisible;
+                    //return this.$store.state.common.dialogVisible;
+                },
+                set(status){
+                    this.$store.commit('toggleDialog', status);
+                }
+            },
+            refreshData: {
+                get(){
+                     return this.$store.getters.getState.refresh;
+                },
+                set(status){
+                    this.$store.commit('changeRefresh', status);
+                }
+            }
+        },
+        watch: {
+            'refreshData': {
+                deep: true,
+                handler: function (val) {
+                    console.error(val)
+                    if (val == true) {
+                        this.getdata();
+                    }
 
 
-             AddForm,
-
+                }
+            }
         },
         methods: {
+            ...mapActions(['getBillDatas', 'setBillData', 'setUpload']),
+            notify () {
 
+                this.setBillData(this.item)
+                //this.note = _.assign({}, this.storenote.toJSON())
+            },
             _init: function (callback) {
+                console.warn(this.storebid)
+                this.setBillData(false)
                 this.getdata();
             },
-            setting:function(){
+            setting: function () {
 
-                var path='/dataform/setting'
+                var path = '/dataform/setting'
                 this.$router.go(path)
 
             },
-            select:function(index){
-                console.log(index)
-                this.selected=index
+            select: function (index) {
+
+                this.selected = index
             },
             remove: function (item) {
-                var _vm=this;
-               item.destroy({
-                  success: function(object) {
-                     _vm.$notify({
-                              title: '成功',
-                              message: '这是一条成功的提示消息',
-                              type: 'success'
-                            });
-                  },
-                  error: function(object, error) {
+                var _vm = this;
+                item.destroy({
+                    success: function (object) {
+                        _vm.$notify({
+                            title: '成功',
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        _vm.getdata();
+                    },
+                    error: function (object, error) {
 
-                  }
+                    }
                 });
             },
 
-            edit: function (item) {
-                this.item=item;
-                this.dialogVisible=true;
+            add: function () {
+                var kobject = AV.Object.createWithoutData('billdata', '')
+                this.item = kobject;
+                this.notify()
+                this.dialogVisible = true;
 
             },
+            edit: function (item) {
+                this.item = item;
+                this.notify();
+                this.dialogVisible = true;
+            },
+
 
             getdata: function (callback) {
                 var _vm = this;
-                this.items=[];
-                var WebSite = Kevio.Object.extend("an_layout");
-                var query = new Kevio.Query(WebSite);
-                query.descending("_created_at");
+                _vm.items = [];
 
-                query.find({
-                    success: function(results) {
-                        console.log("Successfully retrieved " + results.length + " scores.");
-                        // Do something with the returned Parse.Object values
+                this.getBillDatas().then(function (results) {
+                    console.log(results)
+                    if (results) {
+
                         for (var i = 0; i < results.length; i++) {
-                            var object = results[i] ;
-
-                             //object.picture=object.parseFile.url;
-
+                            var object = results[i];
+                            console.log(object)
                             _vm.items.push(object)
-                           // console.log(object.id + ' - ' + object.get('playerName'));
                         }
-                    },
-                    error: function(error) {
-                        alert("Error: " + error.code + " " + error.message);
+                        _vm.$store.commit('changeRefresh', false);
                     }
+                }, function (err) {
+                    console.log(err);
                 });
+
 
             },
         }

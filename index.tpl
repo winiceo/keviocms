@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>vue</title>
   </head>
-  <link rel="stylesheet" href="https://unpkg.com/iview@0.9.10/dist/styles/iview.css">
+<script src="https://cdn1.lncld.net/static/js/av-min-1.5.3.js"></script>
 
 <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.js"></script>
 <script>

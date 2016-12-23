@@ -40,6 +40,9 @@ export default {
 }
 </script>
 <style lang="stylus">
+    .right-menu
+        margin-top: 0px;
+
     #stats {
         position: absolute;
         left: 1px;

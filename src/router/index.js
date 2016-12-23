@@ -39,6 +39,16 @@ export default [
         name: 'web',
         component: require('pages/web')
     },
+    {
+        path: '/note',
+        name: 'note',
+        component: require('pages/note')
+    },
+    {
+        path: '/test',
+        name: 'test',
+        component: require('pages/test')
+    },
 
 
     {

@@ -9,5 +9,11 @@ export const STORE_KEY_CONFIG_PAGE_LIMIT = 'config.page.limit'
 
 export const STORE_BILL_BID = 'bill.bid'
 export const STORE_BILL = 'bill'
-export const STORE_BILL_JSON = 'billjson'
+export const STORE_BILL_DATAS = 'billdatas'
+export const STORE_BILL_DATA = 'billdata'
+
+//note
+
+export const STORE_NOTES = 'notes'
+
 

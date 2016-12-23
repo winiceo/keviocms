@@ -30,8 +30,9 @@
             <ul class='right-menu'>
 
 
-                <li v-for="(menu,index) in menus" >
-                    <router-link :to="{ name: menu.route ,query: { bid: app.bid }}" class="btn btn-menu btn-tag" :title='menu.title'>
+                <li v-for="(menu,index) in menus">
+                    <router-link :to="{ name: menu.route ,query: { bid:bid }}" class="btn btn-menu btn-tag"
+                                 :title='menu.title'>
                         <i :class="'el-icon-'+menu.icon"></i>
 
                     </router-link>
@@ -56,26 +57,24 @@
 
 <style lang="stylus" scoped>
     @import "../../assets/css/variable"
-    $panel-color=#eceff1
-    $menu-active-color=#01adb6
+    $panel-color = #eceff1
+    $menu-active-color = #01adb6
 
+    a:link,
+    a:active,
+    a:hover,
+    a:visited
+        text-decoration: none
 
-
-    #tool-panel .tool-content {
+    .tool-menu
         display: block;
         float: left;
-        height: 100%;
-        width: 400px;
-        padding: 10px 10px 20px;
-    }
 
-    .tool-menu {
-        display: block;
-        float: left;
         height: 100%;
         width: 80px;
-    }
-
+        ul, ol
+            padding-left: 0px;
+            padding-top: 20px;
 
     .tool-menu .help-menu {
         position: absolute;
@@ -85,19 +84,12 @@
         min-height: 50px;
         max-height: 70px;
     }
-    #canvas-panel {
-        background-color: #ededed;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 595px;
-        z-index: 5;
-    }
+
     #tool-panel
         top: 0;
         left: 0;
         bottom: 0;
-        width: 485px;
+        width: 500px;
         background-color: $panel-color;
 
     .btn-tag:after {
@@ -108,7 +100,7 @@
         width: 100%;
         left: 0;
         bottom: 0;
-        padding-top:10px
+        padding-top: 10px
         font-size: 14px;
         line-height: 13px;
         font-weight: normal;
@@ -117,10 +109,10 @@
         word-wrap: break-word;
     }
 
-
     .btn-tag.active:after {
-        color: $menu-active-color ;
+        color: $menu-active-color;
     }
+
     .right-menu .btn {
         float: left;
         color: white;
@@ -138,11 +130,8 @@
         color: $menu-active-color !important;
 
     .router-link-active:after
-            bottom: 5px;
-            color:$menu-active-color
-
-
-
+        bottom: 5px;
+        color: $menu-active-color
 
     .btn
         font-family: Lato, Arial, sans-serif;
@@ -156,39 +145,41 @@
         text-align: center;
         vertical-align: middle;
         margin: 10px 5px;
-        font-size:22px
+        font-size: 22px
 
     .btn:hover,
     .btn:focus,
     .btn.active {
-            color: $menu-active-color;
+        color: $menu-active-color;
     }
+
     .btn-menu {
-            display: inline-table;
-            vertical-align: top;
-            color: #899595;
-            padding: 0;
-            font-size: 3vh;
+        display: inline-table;
+        vertical-align: top;
+        color: #899595;
+        padding: 0;
+        font-size: 3vh;
 
-            border-right: 10px solid transparent;
-            width: 100%;
-            height: 100%;
+        border-right: 10px solid transparent;
+        width: 100%;
+        height: 100%;
     }
-
 
     .btn-menu.active {
-            background-color: $panel-color;
+        background-color: $panel-color;
 
     }
 
     .btn-menu.btn-tag:after {
-            bottom: 5px;
+        bottom: 5px;
 
     }
+
     .btn-menu.btn-tag.active:after {
-            bottom: 5px;
-            color:$menu-active-color
+        bottom: 5px;
+        color: $menu-active-color
     }
+
     .tool-menu ul {
         height: 100%;
         background-color: #2b3031;
@@ -214,32 +205,41 @@
     }
 
 </style>
-<script>
+<script type="text/ecmascript-6">
 
-//import {MTabs,MTabPane} from 'leven'
-//import {Layout,DataForm,Statistics,Setting} from './tabs'
-export default {
+    import {mapGetters, mapActions} from 'vuex'
 
+    export default {
 
 
         data(){
             return {
-                menus:[]
+                menus: []
 
+            }
+        },
+        computed: {
+            ...mapGetters(['storebid']),
+            bid:{
+                get(){
+                    return this.storebid
+                }
             }
         },
         methods: {
 
             _init: function (callback) {
-               this.menus=[
-                {title:"模板",icon:"document",route:'layout'},
-                {title:"设置",icon:"setting",route:'setting'},
-                {title:"数据",icon:"more",route:'data'}
+                this.menus = [
+                    {title: "模板", icon: "document", route: 'layout'},
+                    {title: "设置", icon: "setting", route: 'setting'},
+                    {title: "数据", icon: "more", route: 'data'},
+                    {title: "笔记", icon: "more", route: 'note'},
+                    {title: "测试", icon: "more", route: 'test'}
 
-               ]
+                ]
             },
             handleClick(e){
-              console.log(e)
+                console.log(e)
 
             },
             components22: {
@@ -253,14 +253,11 @@ export default {
                 //Setting
 
 
-
             }
         }
 
 
     }
-
-
 
 
 </script>

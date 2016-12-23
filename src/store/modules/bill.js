@@ -1,114 +1,184 @@
-import { assign } from 'lodash'
-import { saveMulti, clearMulti,save } from '../../storage'
-import { getStoreBill, login, getUserInfo } from './user.api'
-import { STORE_BILL,STORE_BILL_BID,STORE_BILL_JSON } from '../../constants'
-import K from 'parse'
+import {assign} from 'lodash'
+import {saveMulti, clearMulti, save,read} from '../../storage'
+import {getStoreBill, login, getUserInfo} from './user.api'
+import {STORE_BILL, STORE_BILL_BID, STORE_BILL_DATAS, STORE_BILL_DATA} from '../../constants'
+import AV from 'leanengine'
 const stored = getStoreBill()
 
-var Bill = K.Object.extend("bill");
+var Bill = AV.Object.extend("bill");
+var BillData = AV.Object.extend("billdata");
 var billObject = new Bill();
 const state = {
-  bid: stored[0] || '',
-  billjson: stored[1] || '',
-  bill:''
-
+    bid: stored[0] || '',
+    bill: '',
+    bills:'',
+    billdatas:[],
+    billdata:{},
+    upload: {}
 }
-let userInitPromise = null
 
 const mutations = {
-  // set user info
-  SET_BILL (state, bill) { 
-    state.bill = bill
-  },
-  SET_BID (state, bid) {
-    state.bid = bid
-  },
-  SET_BILL_JSON (state, billjson) { 
-    state.billjson = billjson
-  },
+    // set user info
+
+    SET_BID (state, bid) {
+        state.bid = bid
+        save(STORE_BILL_BID, bid)
+    },
+    SET_BILL (state, bill) {
+        state.bill = bill
+    },
+    SET_BILLS (state, bills) {
+        state.bills = bills
+    },
+
+    SET_BILL_DATAS (state, billdatas) {
+        state.billdatas = billdatas
+    },
+
+    SET_Bill_DATA(state, billdata) {
+        state.billdata = billdata
+    },
+    SET_UPLOAD (state, upload) {
+        state.upload = upload
+    }
 
 }
 
 const actions = {
 
-  getBill: ({commit, dispatch, state}, config) => {
+    updateBid ({commit}, bid) {
+        commit('SET_BID', bid)
+        save(STORE_BILL_BID, bid)
 
-     return new Promise((resolve, reject) => {
-      var query = new K.Query(Bill);
-      query.equalTo("objectId", state.bid);
+    },
+    getBill: ({commit, dispatch, state}, config) => {
 
-      query.first({
-        success: function(result) {
-           
-           if(result){
-            const bill = result
-            commit('SET_BILL', bill)
-            //commit('SET_BILL_JSON', bill.toJSON())
-            saveMulti([{
-              key: STORE_BILL,
-              value: bill
-            }, {
-              key: STORE_BILL_BID,
-              value: state.bid
-            }])
-           
-            resolve(bill)
-           }else{
-            resolve(false)
-           }
-            
-        },
-        error: function(error) {
-          reject(error)
-          alert("Error: " + error.code + " " + error.message);
-        }
-      });
-     }).catch(err => { reject(err) })
+        return new Promise((resolve, reject) => {
+            var query = new AV.Query(Bill);
+            query.equalTo("objectId", state.bid);
+
+            query.first({
+                success: function (result) {
+
+                    if (result) {
+                        const bill = result
+                        commit('SET_BILL', bill)
+                        //commit('SET_BILL_JSON', bill.toJSON())
+                        saveMulti([{
+                            key: STORE_BILL,
+                            value: bill
+                        }])
+
+                        resolve(bill)
+                    } else {
+                        resolve(false)
+                    }
+
+                },
+                error: function (error) {
+                    reject(error)
+
+                }
+            });
+        }).catch(err => {
+            reject(err)
+        })
+
+    },
 
 
+    updateBill ({commit}, bill) {
+        commit('SET_BILL', bill)
+        saveMulti([{
+            key: STORE_BILL,
+            value: bill
+        }])
+
+    },
 
 
-  },
-  updateBid ({ commit }, bid) {
-      commit('SET_BID',bid)
-      save(STORE_BILL_BID, bid)
+    getBillDatas: ({commit, dispatch, state}, config) => {
 
-  },
-  updateBill ({ commit }, bill) {
-      commit('SET_BILL', bill)
-      saveMulti([{
-              key: STORE_BILL,
-              value: bill
-            }, {
-              key: STORE_BILL_BID,
-              value: state.bid
-      }])
+        return new Promise((resolve, reject) => {
+            var query = new AV.Query(BillData);
+            query.equalTo("bid", state.bid);
+            query.descending("_created_at");
+            query.find({
+                success: function (result) {
 
-  },
-  updateBillJson ({ commit }, billjson) {
-     commit('SET_BILL_JSON', billjson)
-     save(STORE_BILL_JSON, billjson)  
+                    if (result) {
+                        const billdata = result
+                        commit('SET_BILL_DATAS', billdata)
 
-  },
+                        saveMulti([{
+                            key: STORE_BILL_DATAS,
+                            value: billdata
+                        }])
+                         
+                        resolve(billdata)
+                    } else {
+                        resolve(false)
+                    }
 
+                },
+                error: function (error) {
+                    reject(error)
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        }).catch(err => {
+            reject(err)
+        })
+
+    },
+
+    saveBillData ({commit, dispatch, state}, payload) {
+
+
+        var kobj = AV.Object.createWithoutData('billdata', payload.id);
+        // 设置名称
+        kobj.set('bid',state.bid)
+        kobj.set(payload);
+        return kobj.save()
+
+    },
+
+    setBillData: ({commit, dispatch, state}, config) => {
+
+        commit('SET_Bill_DATA', config)
+
+    },
+    setUpload: ({commit, dispatch, state}, config) => {
+
+        commit('SET_UPLOAD', config)
+
+
+    }
 }
 
 const getters = {
-  storebid (state) {
-    return state.bid
-  },
-  storebill (state) {
-    return state.bill
-  },
-  storebilljson (state) {
-    return state.billjson
-  }
+    storebid (state) {
+        return state.bid
+    },
+    storebill (state) {
+        return state.bill
+    },
+
+    storebilldatas(state){
+        return state.billdatas
+    },
+    storebilldata(state){
+        return state.billdata
+    },
+    storeupload (state) {
+        return state.upload
+    }
 }
 
 export default {
-  state,
-  mutations,
-  actions,
-  getters
+    state,
+    mutations,
+    actions,
+    getters
 }
 

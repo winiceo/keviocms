@@ -3,13 +3,16 @@
     <div class="layoutContent">
         <el-row class='headBar'>
             <el-col :span="12">
-                <el-button type="primary" icon="plus" @click.native="dialogVisible = true">管理模板</el-button>
+                <el-button type="primary" icon="plus" @click="add()">添加数据</el-button>
             </el-col>
-            <el-col :span="12"></el-col>
+            <el-col :span="12">
+                <el-button type="primary" icon="setting" @click="setting">设置字段</el-button>
+            </el-col>
         </el-row>
 
+
         <el-row :gutter="10" class='listrow'>
-            <el-col :span="8" v-for="(item,index) in items">
+            <el-col :span="12" v-for="(item,index) in items">
                 <figure :class="[selected==index?'uk-overlay':'']">
                     <div class="uk-panel uk-panel-box" @click="select(index)">
                         <div class="uk-panel-teaser">
@@ -41,7 +44,7 @@
             </el-col>
         </el-row>
         <el-dialog title="添加" v-model="dialogVisible" size="small" ref="webDialog">
-            <AddForm></AddForm>
+            <AddForm  ></AddForm>
         </el-dialog>
     </div>
 </template>
@@ -50,7 +53,6 @@
     .layoutContent
         .listrow
             margin-top: 2px
-
 
         .el-col {
             margin-bottom: 5px;
@@ -66,7 +68,9 @@
 <script type="text/ecmascript-6">
 
 
-    import AddForm from './LayoutAdd'
+    import AddForm from './add'
+    import {mapGetters, mapActions} from 'vuex'
+
     export default {
 
         data(){
@@ -84,10 +88,24 @@
             AddForm,
 
         },
+        computed: {
+            ...mapGetters(['storebill', 'storebid'])
+        },
         methods: {
+            ...mapActions(['getBill', 'updateBid', 'updateBillJson', 'getBillData','setBillData']),
+            notify () {
 
+                this.setBillData( this.item)
+
+            },
             _init: function (callback) {
                 this.getdata();
+            },
+            setting: function () {
+
+                var path = '/dataform/setting'
+                this.$router.go(path)
+
             },
             select: function (index) {
                 console.log(index)
@@ -99,7 +117,7 @@
                     success: function (object) {
                         _vm.$notify({
                             title: '成功',
-                            message: '这是一条成功的提示消息',
+                            message: '删除成功',
                             type: 'success'
                         });
                     },
@@ -109,36 +127,39 @@
                 });
             },
 
+            add: function () {
+                var KObject = K.Object.extend("billdata");
+                var kobject = new KObject();
+                this.item = kobject;
+                this.item.set('bid',  this.storebid);
+                this.dialogVisible = true;
+                this.notify()
+
+            },
             edit: function (item) {
                 this.item = item;
                 this.dialogVisible = true;
+                this.notify()
 
             },
 
             getdata: function (callback) {
                 var _vm = this;
-                this.items = [];
-                var WebSite = Kevio.Object.extend("an_layout");
-                var query = new Kevio.Query(WebSite);
-                query.descending("_created_at");
+                _vm.items = [];
+                _vm.$parent.$parent.getBillDataById();
+                this.getBillData().then(function (results) {
+                    if (results) {
 
-                query.find({
-                    success: function (results) {
-                        console.log("Successfully retrieved " + results.length + " scores.");
-                        // Do something with the returned Parse.Object values
                         for (var i = 0; i < results.length; i++) {
                             var object = results[i];
 
-                            //object.picture=object.parseFile.url;
-
                             _vm.items.push(object)
-                            // console.log(object.id + ' - ' + object.get('playerName'));
                         }
-                    },
-                    error: function (error) {
-                        alert("Error: " + error.code + " " + error.message);
                     }
+                }, function (err) {
+                    console.log(err);
                 });
+
 
             },
         }

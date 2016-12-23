@@ -9,6 +9,7 @@ import store from './store'
 import FastClick from 'fastclick'
 import { sync } from 'vuex-router-sync'
 
+const _ = require('lodash')
 
 
 import K from 'parse';
@@ -24,27 +25,35 @@ K.initialize("kevioapp", 'pmker.com');
 K.serverURL = 'http://localhost:4000/api/parse'
 window.Kevio=window.K=K;
 
-Vue.mixin({
-  data:function(){
-    return {
-      app:{}
 
-    }
-  },
+const AV = require('leanengine')
+var APP_ID = '1e2a1f8CBN4mliM17JaXnHHg';
+var APP_KEY = 'z4mQ2xaRHeXP2RVCaezCSHNF';
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+});
+window.AV=AV
+
+Vue.mixin({
+
   methods: {
 
     _init: function (callback) {
 
     }
   },
-  mounted(){
+  beforeMount(){
     var _vm=this;
     if(_vm.$route&&_vm.$route.query){
       if(_vm.$route.query.bid){
-        _vm.$set(this.app,'bid',_vm.$route.query.bid)
+        store.commit("SET_BID",_vm.$route.query.bid)
 
       }
     }
+
+  },
+  mounted(){
 
     this._init();
   }
