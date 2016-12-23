@@ -48,10 +48,7 @@
 
         </div>
 
-        <div class="tool-content">
 
-            <router-view></router-view>
-        </div>
     </div>
 </template>
 
@@ -230,10 +227,7 @@
 
             _init: function (callback) {
                 this.menus = [
-                    {title: "模板", icon: "document", route: 'layout'},
-                    {title: "设置", icon: "setting", route: 'setting'},
-                    {title: "数据", icon: "more", route: 'data'},
-
+                    {title: "合集", icon: "document", route: 'bill'},
 
 
                 ]

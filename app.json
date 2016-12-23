@@ -1,0 +1,36 @@
+{
+  "pages": [
+    
+    {
+      "entry": "404",
+      "title": "找不到页面",
+      "cdn": {
+        "js": []
+      }
+    },
+    {
+      "entry": "collect",
+      "title": "编辑器",
+      "cdn": {}
+    },
+    {
+      "entry": "usercenter",
+      "title": "用户中心",
+      "cdn": {}
+    }
+  ],
+  "basePath": "./src/app/",
+  "cdn": {
+    "js": [
+      "//cdn.bootcss.com/jquery/2.2.1/jquery.js",
+      "//cdn.bootcss.com/vue/2.1.6/vue.min.js",
+      "//cdn.bootcss.com/vuex/2.1.1/vuex.min.js"
+
+    ],
+    "css": []
+  },
+  "externals": {
+    "vue": "Vue",
+    "vuex": "Vuex"
+  }
+}

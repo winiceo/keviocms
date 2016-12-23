@@ -64,6 +64,9 @@ export default {
     password: '请输入密码',
     button: '登录'
   },
+  register:{
+    button:'注册'
+  },
   system:{
     name:'KevioCms管理后台'
   }

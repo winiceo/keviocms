@@ -1,10 +1,10 @@
-# vue
+# my-project
 > A vue project.
 
 ## Development
 
 ```shell
-npm i cooking -g
+npm i cooking-cli -g
 npm run dev
 ```
 
@@ -15,4 +15,3 @@ npm run dist
 
 ## License
 ISC
-# keviocms

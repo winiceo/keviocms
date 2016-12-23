@@ -28,7 +28,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-@import "nprogress/nprogress.css"
+@import "~nprogress/nprogress.css"
 #nprogress
     .bar
         background: white;

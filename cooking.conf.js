@@ -1,107 +1,82 @@
 var path = require('path');
 var cooking = require('cooking');
+var build = require('./build');
 
+var isProd = process.env.NODE_ENV === 'production';
 
-var chunk = [
-    {
-        name: 'vendor',
-        minChunks: function (module, count) {
-            // any required modules inside node_modules are extracted to vendor
-            return (
-                module.resource &&
-                /\.js$/.test(module.resource) &&
-                module.resource.indexOf(
-                    path.join(__dirname, 'node_modules')
-                ) === 0
-            );
-        }
-    },
-    {
-        // extract webpack runtime and module manifest to its own file in order to
-        // prevent vendor hash from being updated whenever app bundle is updated
-        name: 'manifest',
-        chunks: ['vendor']
-    }
-];
-
-
-// console.log(path.join(__dirname, 'src/themes/default'))
- 
+ // entry: Object.assign(
+ //        // 用到什么公共lib（例如React.js），就把它加进vender去，目的是将公用库单独提取打包
+ //        // 'vender': ['vue','jquery']
+ //       'babel-polyfill',
+ //        build.entries()
+ //    ),
 cooking.set({
-    
- 
-    leven:"fuck",
-    entry: {
-        app: './src/index.js'
-    },
+    entry: build.entries(),
     dist: './dist',
-    template: './index.tpl',
-
+    template: build.templates(),
     devServer: {
         port: 8888,
-        log: false,
-        publicPath: '/'
+        publicPath: '/',
     },
     clean: true,
     hash: true,
     sourceMap: true,
-    minimize: true,
-    chunk: chunk,
-
-    publicPath: '/dist/',
-
-
-    assetsPath: 'static',
+    chunk: true,
     urlLoaderLimit: 10000,
-    extractCSS: '[name].[contenthash:7].css',
-    root: path.join(__dirname, 'src'),
+    // postcss: function(webapck) {
+    //     return [
+    //         require('postcss-salad')({
+    //             browser: ['ie > 8', 'last 2 version'],
+    //             features: {
+    //                 'partialImport': {
+    //                     addDependencyTo: webapck
+    //                 },
+    //                 'bem': {
+    //                     'shortcuts': {
+    //                         'component': 'b',
+    //                         'modifier': 'm',
+    //                         'descendent': 'e'
+    //                     },
+    //                     'separators': {
+    //                         'descendent': '__',
+    //                         'modifier': '--'
+    //                     }
+    //                 }
+    //             }
+    //         })
+    //     ];
+    // },
+
+
     modulesDirectories: ['node_modules'],
+    assetsPath: 'static',
+    publicPath: './',
+    extractCSS: isProd ? 'static/[name].[contenthash:7].css' : true,
 
-    extends: ['vue2', 'sass'],
-    postcss: function(webapck) {
-        return [
-            require('postcss-salad')({
-                browser: ['ie > 8', 'last 2 version'],
-                features: {
-                    'partialImport': {
-                        addDependencyTo: webapck
-                    },
-                    'bem': {
-                        'shortcuts': {
-                            'component': 'b',
-                            'modifier': 'm',
-                            'descendent': 'e'
-                        },
-                        'separators': {
-                            'descendent': '__',
-                            'modifier': '--'
-                        }
-                    }
-                }
-            })
-        ];
-    }
-
-
-
-
+    extends: ['vue2', 'buble', 'autoprefixer'],
+    externals: build.externals()
 });
-
 
 cooking.add('resolve.alias', {
 
-     
+
     kevio: path.join(__dirname, 'src'),
     pages: path.join(__dirname, 'src/pages'),
+    modules: path.join(__dirname, 'src/modules'),
     assets:path.join(__dirname, 'src/assets'),
     elementUi:path.join(__dirname, 'src/lib/elementUi'),
     leven:path.join(__dirname, 'src/lib/leven'),
     iview:path.join(__dirname, 'src/lib/iview'),
 
 
-     
+
 });
 cooking.add('resolve.root', [
+    process.cwd() + '/src',
+    process.cwd() + '/node_modules'
+
+])
+cooking.add('resolve.modules', [
     process.cwd() + '/src',
     process.cwd() + '/node_modules'
 
@@ -117,5 +92,7 @@ cooking.add('resolve.root', [
 
 
 cooking.add('resolve.extensions', ['', '.css','.scss','.less' ,'.js', '.json', '.vue']);
+
+isProd && cooking.add('output.filename', 'static/[name].[hash:7].js');
 
 module.exports = cooking.resolve();

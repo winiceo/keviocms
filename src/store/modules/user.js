@@ -1,6 +1,6 @@
 import { assign } from 'lodash'
 import { saveMulti, clearMulti } from '../../storage'
-import { init, login, getUserInfo } from './user.api'
+import { init, login, getUserInfo,register } from './user.api'
 import { STORE_KEY_USERNAME, STORE_KEY_ACCESS_TOKEN, STORE_KEY_REFRESH_TOKEN } from '../../constants'
 
 const stored = init()
@@ -43,26 +43,54 @@ const actions = {
   // login action
   login ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
-      login(payload.username, payload.password).then(data => {
-        getUserInfo(data.token).then(user => {
-          const userInfo = assign({}, user, {
-            username: payload.username,
-            access_token: data.token,
-            refresh_token: ''
-          })
-          commit('SET_USER_INFO', userInfo)
-          saveMulti([{
-            key: STORE_KEY_USERNAME,
-            value: userInfo.username
-          }, {
-            key: STORE_KEY_ACCESS_TOKEN,
-            value: userInfo.access_token
-          }, {
-            key: STORE_KEY_REFRESH_TOKEN,
-            value: userInfo.refresh_token
-          }])
-          resolve()
-        }).catch(() => {})
+      login(payload.username, payload.password).then(user => {
+
+          commit('SET_USER_INFO', user)
+          resolve(user)
+        //  var currentUser = AV.User.current();
+        // currentUser.isAuthenticated().then(function(authenticated){
+        //     console.log(authenticated);
+        //   });
+        //   saveMulti([{
+        //     key: STORE_KEY_USERNAME,
+        //     value: userInfo.username
+        //   }, {
+        //     key: STORE_KEY_ACCESS_TOKEN,
+        //     value: userInfo.access_token
+        //   }, {
+        //     key: STORE_KEY_REFRESH_TOKEN,
+        //     value: userInfo.refresh_token
+        //   }])
+        // var currentUser = AV.User.current();
+        // console.log(currentUser.toJSON())
+        //resolve.log(data)
+        // getUserInfo(data.token).then(user => {
+        //   const userInfo = assign({}, user, {
+        //     username: payload.username,
+        //     access_token: data.token,
+        //     refresh_token: ''
+        //   })
+        //   commit('SET_USER_INFO', userInfo)
+        //   saveMulti([{
+        //     key: STORE_KEY_USERNAME,
+        //     value: userInfo.username
+        //   }, {
+        //     key: STORE_KEY_ACCESS_TOKEN,
+        //     value: userInfo.access_token
+        //   }, {
+        //     key: STORE_KEY_REFRESH_TOKEN,
+        //     value: userInfo.refresh_token
+        //   }])
+        //   resolve()
+        // }).catch(() => {})
+      }).catch(err => { reject(err) })
+    })
+  },
+  register ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      register(payload.username, payload.password).then(data => {
+        resolve(data)
+
       }).catch(err => { reject(err) })
     })
   },

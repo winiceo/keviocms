@@ -114,7 +114,7 @@ const actions = {
                             key: STORE_BILL_DATAS,
                             value: billdata
                         }])
-                         
+
                         resolve(billdata)
                     } else {
                         resolve(false)

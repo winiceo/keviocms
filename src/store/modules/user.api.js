@@ -12,10 +12,31 @@ export function getStoreBill () {
 }
 
 export function login (username, password) {
-  return Vue.http.post('auth/local', {
-    username,
-    password
-  }).then(res => res.json())
+  var user = new AV.User();
+  // 设置用户名
+  user.setUsername(username);
+  // 设置密码
+  user.setPassword(password);
+  // 设置邮箱
+  //user.setEmail('tom@leancloud.cn');
+  return user.logIn()
+
+}
+export function register (username, password) {
+  var user = new AV.User();
+  // 设置用户名
+  user.setUsername(username);
+  // 设置密码
+  user.setPassword(password);
+  // 设置邮箱
+  //user.setEmail('tom@leancloud.cn');
+  return user.signUp()
+
+
+  // return Vue.http.post('auth/local', {
+  //   username,
+  //   password
+  // }).then(res => res.json())
 }
 
 export function getUserInfo (token) {
