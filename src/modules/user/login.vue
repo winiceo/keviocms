@@ -16,11 +16,7 @@
                 </el-button>
             </el-form-item>
             <el-form-item>
-                <router-link :to="{ name:'register'}" class="btn btn-menu btn-tag"
-                             :title='注册'>
-                    注册
-
-                </router-link>
+                <router-link :to="{ name:'register'}" class="btn btn-menu btn-tag">{{$t('register.button')}}</router-link>
             </el-form-item>
         </el-form>
 

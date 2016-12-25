@@ -9,7 +9,6 @@
   </head>
   <body>
     <div id="app"></div>
-    <% for (var i in htmlWebpackPlugin.options.cdn.js) { %>
-    <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script><% } %>
+
   </body>
 </html>

@@ -12,7 +12,7 @@ export function getStoreBill () {
 }
 
 export function login (username, password) {
-  var user = new AV.User();
+  var user = new K.User();
   // 设置用户名
   user.setUsername(username);
   // 设置密码
@@ -23,7 +23,7 @@ export function login (username, password) {
 
 }
 export function register (username, password) {
-  var user = new AV.User();
+  var user = new K.User();
   // 设置用户名
   user.setUsername(username);
   // 设置密码

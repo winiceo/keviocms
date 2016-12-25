@@ -16,7 +16,8 @@ const mutations = {
 
 const actions = {
   updateLocale ({ commit }, lang) {
-    require([`../../locale/${lang}.js`], (langConfig) => {
+    var langFile="../../locale/zh_CN.js";
+    require(["../../locale/zh_CN.js"], (langConfig) => {
       Vue.locale(lang, langConfig.default)
       Vue.config.lang = lang
       save(STORE_KEY_CONFIG_LOCALE, lang)

@@ -2,7 +2,7 @@ import {assign} from 'lodash'
 import {saveMulti, clearMulti, save,read} from '../../storage'
 import {getStoreBill, login, getUserInfo} from './user.api'
 import {STORE_BILL, STORE_BILL_BID, STORE_BILL_DATAS, STORE_BILL_DATA} from '../../constants'
-import AV from 'leanengine'
+import AV from 'parse'
 const stored = getStoreBill()
 
 var Bill = AV.Object.extend("bill");

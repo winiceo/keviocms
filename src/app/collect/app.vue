@@ -3,11 +3,11 @@
         <x-header></x-header>
         <aside id="content" class="web">
             <x-content></x-content>
+
             <x-canvas :html="html" :kdata="kdata"></x-canvas>
 
         </aside>
 
-        <n-progress parent="#app-main"></n-progress>
 
     </div>
 </template>
@@ -18,13 +18,13 @@
     import XContent from 'pages/common/Content'
     import XCanvas from 'pages/common/Canvas'
     import RouterLoading from 'pages/common/RouterLoading'
-    import NProgress from 'pages/common/NProgress'
+    //import NProgress from 'pages/common/NProgress'
     import {mapGetters, mapActions} from 'vuex'
 
 
     export default {
         computed: {
-            ...mapGetters(['storebill', 'storebid',  'storebilldatas'])
+            ...mapGetters(['storebill', 'storebid', 'storebilldatas'])
         },
         data: function () {
             return {
@@ -39,7 +39,7 @@
             ...mapActions(['getBill', 'updateBillJson', 'getBillDatas']),
             _init(){
                 var _vm = this;
-                this.getBill().then(function(results){
+                this.getBill().then(function (results) {
                     if (results) {
                         _vm.html = results.toJSON()
                     }
@@ -73,15 +73,15 @@
             XContent,
             XCanvas,
 
-            NProgress
+
         }
     }
 </script>
 <style lang="stylus">
-   @import "../../assets/css/theme.css"
+    @import "~assets/css/theme.css"
     @import "~assets/css/variable"
     @import "~assets/css/animate"
-     @import "../../assets/fonts/iconfont.css"
+    @import "~assets/fonts/iconfont.css"
     @import "~assets/css/flex"
 
     html
@@ -134,8 +134,9 @@
         padding: 5px;
         overflow: scroll;
     }
+
     .uk-panel-box
-        background-color:white
+        background-color: white
 
     #canvas-panel {
         position absolute

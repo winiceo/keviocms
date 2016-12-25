@@ -83,7 +83,7 @@
 /**
  * Created by leven on 16/12/21.
  */
-import K from 'leanengine';
+import K from 'parse';
 import {mapGetters, mapActions} from 'vuex'
 import Emitter from 'kevio/lib/emitter';
 
@@ -126,7 +126,7 @@ export default {
         ...mapActions(['getBill', 'updateBid', 'updateBillJson']),
         ooo(nb, ob){
 
-            this.$parent.$parent.html = nb;
+            //this.$parent.$parent.html = nb;
             //this.$store.dispatch('updateBillJson',nb)
             //this.updateBillJson(nb)
         },
@@ -242,18 +242,9 @@ export default {
                 }
             });
         }
-    },
-    watch: {
-        'sets': {
-            deep: true,
-            handler: function (val, oldVal) {
-                this.ooo(val)
-            }
-        }
+    }
+    }
 
-
-    },
-}
 
 
 

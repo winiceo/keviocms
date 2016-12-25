@@ -1,27 +1,6 @@
 <template>
 
-    <!--<div id="tool-panel">-->
 
-
-    <!--&lt;!&ndash;<m-tabs type="card" @tab-click="handleClick">&ndash;&gt;-->
-    <!--&lt;!&ndash;<m-tab-pane label="模板" icon="search">&ndash;&gt;-->
-    <!--&lt;!&ndash;<Layout></Layout>&ndash;&gt;-->
-
-    <!--&lt;!&ndash;</m-tab-pane>&ndash;&gt;-->
-    <!--&lt;!&ndash;<m-tab-pane label="设置" icon="search">&ndash;&gt;-->
-    <!--&lt;!&ndash;<Setting></Setting>&ndash;&gt;-->
-
-    <!--&lt;!&ndash;</m-tab-pane>&ndash;&gt;-->
-    <!--&lt;!&ndash;<m-tab-pane label="数据" icon="search">&ndash;&gt;-->
-    <!--&lt;!&ndash;<Data-form></Data-form>&ndash;&gt;-->
-    <!--&lt;!&ndash;</m-tab-pane>&ndash;&gt;-->
-    <!--&lt;!&ndash;<m-tab-pane label="统计" icon="search">&ndash;&gt;-->
-    <!--&lt;!&ndash;<Statistics></Statistics>&ndash;&gt;-->
-    <!--&lt;!&ndash;</m-tab-pane>&ndash;&gt;-->
-    <!--&lt;!&ndash;</m-tabs>&ndash;&gt;-->
-
-
-    <!--</div>-->
 
     <div id="tool-panel" class="panel">
 
@@ -50,7 +29,7 @@
 
         <div class="tool-content">
 
-            <router-view></router-view>
+            <router-view  ></router-view>
         </div>
     </div>
 </template>

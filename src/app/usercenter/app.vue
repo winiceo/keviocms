@@ -1,5 +1,6 @@
 <template>
     <div id="app-main">
+
         <router-view></router-view>
     </div>
 </template>
@@ -29,7 +30,7 @@
                 // })
                 //
                 // this.bid = this.storebid
-                // this.getBillDataById();
+                // //this.getBillDataById();
                 //
                 // this.kdata = this.storebilldatas;
 
@@ -55,10 +56,10 @@
 </script>
 <style lang="stylus">
 
-     @import "../../assets/css/theme.css"
+    // @import "../../assets/css/theme.css"
     @import "~assets/css/variable"
     @import "~assets/css/animate"
-     @import "../../assets/fonts/iconfont.css"
+    // @import "../../assets/fonts/iconfont.css"
     @import "~assets/css/flex"
 
     html
@@ -111,8 +112,9 @@
         padding: 5px;
         overflow: scroll;
     }
+
     .uk-panel-box
-        background-color:white
+        background-color: white
 
     #canvas-panel {
         position absolute

@@ -70,8 +70,6 @@
         background-color: rgba(0, 0, 0, 0.66);
 </style>
 <script type="text/ecmascript-6">
-
-
     import AddForm from './add'
     import {mapGetters, mapActions} from 'vuex'
 

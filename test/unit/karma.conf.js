@@ -3,17 +3,18 @@
 // we are also using it with karma-webpack
 //   https://github.com/webpack/karma-webpack
 
-var webpackConfig = require('./cooking.conf.js');
-var webpack = require('webpack');
-var merge = require('webpack-merge');
-var path = require('path');
-var projectRoot = path.resolve(__dirname, '../');
+var path = require('path')
+var merge = require('webpack-merge')
+var baseConfig = require('../../build/webpack.base.conf')
+var utils = require('../../build/utils')
+var webpack = require('webpack')
+var projectRoot = path.resolve(__dirname, '../../')
 
-// no need for app entry and plugin during tests
-delete webpackConfig.entry;
-delete webpackConfig.plugins;
-
-webpackConfig = merge(webpackConfig, {
+var webpackConfig = merge(baseConfig, {
+  // use inline sourcemap for karma-sourcemap-loader
+  module: {
+    loaders: utils.styleLoaders()
+  },
   devtool: '#inline-source-map',
   vue: {
     loaders: {
@@ -22,25 +23,29 @@ webpackConfig = merge(webpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': JSON.stringify('testing')
+      'process.env': require('../../config/test.env')
     })
   ]
-});
+})
+
+// no need for app entry during tests
+delete webpackConfig.entry
 
 // make sure isparta loader is applied before eslint
-webpackConfig.module.preLoaders = webpackConfig.module.preLoaders || [];
+webpackConfig.module.preLoaders = webpackConfig.module.preLoaders || []
 webpackConfig.module.preLoaders.unshift({
   test: /\.js$/,
   loader: 'isparta',
   include: path.resolve(projectRoot, 'src')
-});
+})
 
+// only apply babel for test files when using isparta
 webpackConfig.module.loaders.some(function (loader, i) {
   if (loader.loader === 'babel') {
-    loader.include = path.resolve(projectRoot, 'test');
-    return true;
+    loader.include = path.resolve(projectRoot, 'test/unit')
+    return true
   }
-});
+})
 
 module.exports = function (config) {
   config.set({
@@ -48,12 +53,12 @@ module.exports = function (config) {
     // 1. install corresponding karma launcher
     //    http://karma-runner.github.io/0.13/config/browsers.html
     // 2. add it to the `browsers` array below.
-    browsers: ['Chrome'/* ,'PhantomJS'*/],
+    browsers: ['PhantomJS'],
     frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage'],
-    files: ['./test/index.js'],
+    files: ['./index.js'],
     preprocessors: {
-      './test/index.js': ['webpack', 'sourcemap']
+      './index.js': ['webpack', 'sourcemap']
     },
     webpack: webpackConfig,
     webpackMiddleware: {
@@ -66,6 +71,5 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ]
     }
-  });
-};
-
+  })
+}
