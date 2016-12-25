@@ -4,10 +4,10 @@
         <aside id="content" class="web">
             <x-content></x-content>
 
-            <x-canvas :html="html" :kdata="kdata"></x-canvas>
+            <x-canvas   ></x-canvas>
 
         </aside>
-
+        <n-progress parent="#app-main"></n-progress>
 
     </div>
 </template>
@@ -18,60 +18,18 @@
     import XContent from 'pages/common/Content'
     import XCanvas from 'pages/common/Canvas'
     import RouterLoading from 'pages/common/RouterLoading'
-    //import NProgress from 'pages/common/NProgress'
+    import NProgress from 'pages/common/NProgress'
     import {mapGetters, mapActions} from 'vuex'
 
+    import emitter from 'kevio/lib/emitter';
 
     export default {
-        computed: {
-            ...mapGetters(['storebill', 'storebid', 'storebilldatas'])
-        },
-        data: function () {
-            return {
-                html: '<hr>',
-                kdata: [],
-                bid: ''
 
-            }
-        },
-
-        methods: {
-            ...mapActions(['getBill', 'updateBillJson', 'getBillDatas']),
-            _init(){
-                var _vm = this;
-                this.getBill().then(function (results) {
-                    if (results) {
-                        _vm.html = results.toJSON()
-                    }
-                })
-
-                this.bid = this.storebid
-                this.getBillDataById();
-
-                this.kdata = this.storebilldatas;
-
-            },
-            getBillDataById(){
-                var _vm = this;
-                _vm.kdata = []
-                this.getBillDatas().then(function (results) {
-                    if (results) {
-
-                        for (var i = 0; i < results.length; i++) {
-                            var object = results[i];
-
-                            _vm.kdata.push(object)
-                        }
-                    }
-                }, function (err) {
-                    console.log(err);
-                });
-            },
-        },
         components: {
             XHeader,
             XContent,
             XCanvas,
+            NProgress
 
 
         }

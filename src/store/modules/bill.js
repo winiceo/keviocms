@@ -1,20 +1,21 @@
 import {assign} from 'lodash'
-import {saveMulti, clearMulti, save,read} from '../../storage'
+import {saveMulti, clearMulti, save, read,readMulti,clear} from '../../storage'
 import {getStoreBill, login, getUserInfo} from './user.api'
 import {STORE_BILL, STORE_BILL_BID, STORE_BILL_DATAS, STORE_BILL_DATA} from '../../constants'
-import AV from 'parse'
-const stored = getStoreBill()
-
-var Bill = AV.Object.extend("bill");
-var BillData = AV.Object.extend("billdata");
+import K from "parse"
+const stored = readMulti([STORE_BILL_BID, STORE_BILL])
+console.log(stored[1])
+var Bill = K.Object.extend("bill");
+var BillData = K.Object.extend("billdata");
 var billObject = new Bill();
 const state = {
     bid: stored[0] || '',
-    bill: '',
-    bills:'',
-    billdatas:[],
-    billdata:{},
-    upload: {}
+    bill: stored[1] || '',
+    bills: '',
+    billdatas: [],
+    billdata: {},
+    tempbill: {},
+
 }
 
 const mutations = {
@@ -38,8 +39,8 @@ const mutations = {
     SET_Bill_DATA(state, billdata) {
         state.billdata = billdata
     },
-    SET_UPLOAD (state, upload) {
-        state.upload = upload
+    SET_TEMP_BILL(state, bill) {
+        state.tempbill = bill
     }
 
 }
@@ -47,6 +48,7 @@ const mutations = {
 const actions = {
 
     updateBid ({commit}, bid) {
+        clear();
         commit('SET_BID', bid)
         save(STORE_BILL_BID, bid)
 
@@ -54,34 +56,37 @@ const actions = {
     getBill: ({commit, dispatch, state}, config) => {
 
         return new Promise((resolve, reject) => {
-            var query = new AV.Query(Bill);
-            query.equalTo("objectId", state.bid);
 
-            query.first({
-                success: function (result) {
+                var query = new K.Query(Bill);
+                query.equalTo("objectId", state.bid);
 
-                    if (result) {
-                        const bill = result
-                        commit('SET_BILL', bill)
-                        //commit('SET_BILL_JSON', bill.toJSON())
-                        saveMulti([{
-                            key: STORE_BILL,
-                            value: bill
-                        }])
+                query.first({
+                    success: function (result) {
 
-                        resolve(bill)
-                    } else {
-                        resolve(false)
+                        if (result) {
+                            const bill = result
+                            commit('SET_BILL', bill)
+                            console.log(bill)
+                            saveMulti([{
+                                key: STORE_BILL,
+                                value: bill
+                            }])
+
+                            resolve(bill)
+                        } else {
+                            resolve(false)
+                        }
+
+                    },
+                    error: function (error) {
+                        reject(error)
+
                     }
+                });
 
-                },
-                error: function (error) {
-                    reject(error)
 
-                }
-            });
         }).catch(err => {
-            reject(err)
+            console.log(err)
         })
 
     },
@@ -100,7 +105,7 @@ const actions = {
     getBillDatas: ({commit, dispatch, state}, config) => {
 
         return new Promise((resolve, reject) => {
-            var query = new AV.Query(BillData);
+            var query = new K.Query(BillData);
             query.equalTo("bid", state.bid);
             query.descending("_created_at");
             query.find({
@@ -132,13 +137,65 @@ const actions = {
 
     },
 
+    getBills: ({commit, dispatch, state}, config) => {
+
+        return new Promise((resolve, reject) => {
+            var query = new K.Query(Bill);
+
+            query.descending("_created_at");
+            query.find({
+                success: function (result) {
+
+                    if (result) {
+                        const billdata = result
+                        commit('SET_BILLS', billdata)
+
+                        saveMulti([{
+                            key: STORE_BILL_DATAS,
+                            value: billdata
+                        }])
+
+                        resolve(billdata)
+                    } else {
+                        resolve(false)
+                    }
+
+                },
+                error: function (error) {
+                    reject(error)
+                    alert("Error: " + error.code + " " + error.message);
+                }
+            });
+        }).catch(err => {
+            reject(err)
+        })
+
+    },
+
     saveBillData ({commit, dispatch, state}, payload) {
 
 
-        var kobj = AV.Object.createWithoutData('billdata', payload.id);
+        var kobj = K.Object.extend("billdata").createWithoutData(payload.id)
         // 设置名称
-        kobj.set('bid',state.bid)
+        kobj.set('bid', state.bid)
         kobj.set(payload);
+        return kobj.save()
+
+    },
+    saveBill ({commit, dispatch, state}, payload) {
+
+
+        var kobj = K.Object.extend("bill").createWithoutData(payload.id)
+        // 设置名称
+
+        kobj.set(payload);
+        var acl = new K.ACL();
+        acl.setPublicReadAccess(true);
+        acl.setWriteAccess(K.User.current(), true);
+        // kobj.setACL(new Parse.ACL(Parse.User.current()));
+
+        // 将 ACL 实例赋予 Post 对象
+        kobj.setACL(acl);
         return kobj.save()
 
     },
@@ -148,12 +205,17 @@ const actions = {
         commit('SET_Bill_DATA', config)
 
     },
-    setUpload: ({commit, dispatch, state}, config) => {
+    setBill: ({commit, dispatch, state}, config) => {
 
-        commit('SET_UPLOAD', config)
+        commit('SET_BILL', config)
 
+    },
+    setTempBill: ({commit, dispatch, state}, config) => {
 
-    }
+        commit('SET_TEMP_BILL', config)
+
+    },
+
 }
 
 const getters = {
@@ -170,8 +232,8 @@ const getters = {
     storebilldata(state){
         return state.billdata
     },
-    storeupload (state) {
-        return state.upload
+    tempbill(state){
+        return state.tempbill
     }
 }
 

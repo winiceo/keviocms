@@ -5,8 +5,9 @@
 <template>
     <div class="demo-form">
 
+
         <el-form :model='item' :rules="rules" ref="item" label-width="100px" class="demo-item  ">
-            <input v-model="item.name">
+
             <el-form-item label="名称" prop="name">
                 <el-input v-model="item.name"></el-input>
             </el-form-item>
@@ -32,7 +33,6 @@
 <script type='text/ecmascript-6'>
     import {mapGetters, mapActions} from 'vuex'
     import emitter from 'kevio/mixins/emitter';
-
     import levenUpload from 'pages/common/Upload'
     export default {
         mixins: [emitter],
@@ -64,9 +64,10 @@
         created(){
             //初始化
             this.initItem()
+
         },
         watch: {
-            'storenote': {
+            'storebilldata': {
                 deep: true,
                 handler: function (val, oldVal) {
 
@@ -77,8 +78,8 @@
             'storeupload': {
                 deep: true,
                 handler: function (val, oldVal) {
-                    console.log(val.className)
-                    if (val.className == '_File') {
+
+                    if (val ) {
                         this.item.picture = val;
                     }
 
@@ -97,14 +98,14 @@
                 this.filelist = [];
                 var _vm = this;
 
-                var piture = this.storebilldata.get('picture')
-                if (piture) {
+                var picture = this.storebilldata.get('picture')
+                if (picture) {
 
                     this.filelist = []
-                    this.setUpload(piture)
+                    this.setUpload(picture)
                     var file = {
-                        name: piture.get("name"),
-                        url: piture.thumbnailURL(200, 200)
+                        name: picture.name(),
+                        url: picture.url(),
                     }
                     this.filelist.push(file)
                 }
@@ -121,10 +122,12 @@
                 var _vm = this;
                 this.$refs.item.validate((valid) => {
                     if (valid) {
+                        _vm.item.picture=this.storeupload
                         _vm.saveBillData(_vm.item).then(
                                 function (results) {
                                     _vm.$store.commit('toggleDialog', false);
                                     _vm.$store.commit('changeRefresh', true);
+                                    _vm.$bus.$emit('billdata_change');
                                     _vm.$notify({
                                         title: '成功',
                                         message: '保存成功',

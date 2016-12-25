@@ -2,12 +2,12 @@
     <div id="app-main">
         <x-header></x-header>
         <aside id="content" class="web">
-            <x-content></x-content>
+            <x-content></x-content>2
+
             <div id="canvas-panel" class="panel">
 
-                <router-view name="main"></router-view>
+                <router-view  ></router-view>
             </div>
-
         </aside>
 
         <n-progress parent="#app-main"></n-progress>
@@ -75,7 +75,6 @@
             XHeader,
             XContent,
             XCanvas,
-
             NProgress
         }
     }

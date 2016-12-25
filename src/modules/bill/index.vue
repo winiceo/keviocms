@@ -3,22 +3,20 @@
     <div class="layoutContent">
         <el-row class='headBar'>
             <el-col :span="12">
-                <el-button type="primary" icon="plus" @click="add()">添加数据</el-button>
+                <el-button type="primary" icon="plus" @click="add()">新建</el-button>
             </el-col>
-            <el-col :span="12">
-                <el-button type="primary" icon="setting" @click="setting">设置字段</el-button>
-            </el-col>
+
         </el-row>
 
 
         <el-row :gutter="10" class='listrow'>
-            <el-col :span="12" v-for="(item,index) in items">
+            <el-col :span="4" v-for="(item,index) in items">
                 <figure :class="[selected==index?'uk-overlay':'']">
                     <div class="uk-panel uk-panel-box" @click="select(index)">
                         <div class="uk-panel-teaser">
 
                             <template v-if='item.get("picture")'>
-                                <img :src="item.get('picture').thumbnailURL(200, 200)" style="height:150px;">
+                                <img :src="item.get('picture').url( )" style="height:150px;">
                             </template>
                             <div style="padding: 14px;">
                                 <span>{{item.get('name')}}</span>
@@ -70,6 +68,8 @@
         background-color: rgba(0, 0, 0, 0.66);
 </style>
 <script type="text/ecmascript-6">
+
+
     import AddForm from './add'
     import {mapGetters, mapActions} from 'vuex'
 
@@ -81,14 +81,11 @@
                 items: [],
                 selected: -1,
                 item: {
-                    name: '',
-
+                    title: '',
                     url: '',
-                    description: ''
+                    description: '',
+                    picture:null
                 }
-
-
-
             }
         },
         components: {
@@ -129,15 +126,15 @@
             }
         },
         methods: {
-            ...mapActions(['getBillDatas', 'setBillData', 'setUpload']),
+            ...mapActions(['getBills', 'setBill', 'setUpload']),
             notify () {
 
-                this.setBillData(this.item)
+                this.$store.commit('SET_BILL',this.item)
                 //this.note = _.assign({}, this.storenote.toJSON())
             },
             _init: function (callback) {
-                console.warn(this.storebid)
-                this.setBillData(false)
+
+                //this.setBill(false)
                 this.getdata();
             },
             setting: function () {
@@ -168,16 +165,20 @@
             },
 
             add: function () {
-                var kobject = AV.Object.createWithoutData('billdata', '')
+
+                var kobject = K.Object.extend("bill").createWithoutData('')
+
                 this.item = kobject;
                 this.notify()
                 this.dialogVisible = true;
 
             },
             edit: function (item) {
-                this.item = item;
-                this.notify();
-                this.dialogVisible = true;
+                // /this.item = item;
+
+                 window.open('/collect.html#/setting?bid='+item.id)
+                // this.notify();
+                // this.dialogVisible = true;
             },
 
 
@@ -185,7 +186,7 @@
                 var _vm = this;
                 _vm.items = [];
 
-                this.getBillDatas().then(function (results) {
+                this.getBills().then(function (results) {
                     console.log(results)
                     if (results) {
 

@@ -31,7 +31,7 @@
 
 
                 <li v-for="(menu,index) in menus">
-                    <router-link :to="{ name: menu.route ,query: { bid:bid }}" class="btn btn-menu btn-tag"
+                    <router-link :to="  menu.route " class="btn btn-menu btn-tag"
                                  :title='menu.title'>
                         <i :class="'el-icon-'+menu.icon"></i>
 
@@ -227,7 +227,7 @@
 
             _init: function (callback) {
                 this.menus = [
-                    {title: "合集", icon: "document", route: 'bill'},
+                    {title: "合集", icon: "document", route: '/dashboard/bill'},
 
 
                 ]

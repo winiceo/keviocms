@@ -42,6 +42,8 @@
         methods:{
             ...mapActions(['setUpload']),
             handleRemove(file, fileList) {
+
+                this.setUpload(null)
                 console.log(file, fileList);
             },
             handlePreview(file) {
@@ -50,14 +52,14 @@
             handleUPloadSuccess(file){
                 this.setUpload(file)
 
-                var piture=file.toJSON();
-                piture.url=file.thumbnailURL(200, 200)
-                this.filelist.push(piture)
+                var picture=file.toJSON();
+                picture.url=file.url()
+                this.filelist.push(picture)
             },
             handleUPloadBefore(file){
                 var _vm = this;
 
-                this.parseFile = new AV.File(file.name, file);
+                this.parseFile = new K.File(file.name, file);
 
                 this.parseFile.save().then(function (file) {
 

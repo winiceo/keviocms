@@ -4,11 +4,12 @@
 </style>
 <template>
     <div class="demo-form">
+        {{item}}
 
         <el-form :model='item' :rules="rules" ref="item" label-width="100px" class="demo-item  ">
             <input v-model="item.name">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="item.name"></el-input>
+                <el-input v-model="item.title"></el-input>
             </el-form-item>
             <el-form-item label="网址" prop="url">
                 <el-input v-model="item.url"></el-input>
@@ -39,7 +40,7 @@
         data() {
             return {
                 itemdata: {
-                    name: '',
+                    title: '',
                     url: '',
                     description: '',
                     picture: null
@@ -47,7 +48,7 @@
                 },
                 item: {},
                 rules: {
-                    name: [
+                    title: [
                         {required: true, message: '请输入名称', trigger: 'blur'}
                     ]
                 },
@@ -58,7 +59,7 @@
             levenUpload
         },
         computed: {
-            ...mapGetters(['storebilldata', 'storeupload']),
+            ...mapGetters(['storebill', 'storeupload']),
 
         },
         created(){
@@ -66,19 +67,12 @@
             this.initItem()
         },
         watch: {
-            'storenote': {
-                deep: true,
-                handler: function (val, oldVal) {
 
-
-                    this.initItem()
-                }
-            },
             'storeupload': {
                 deep: true,
                 handler: function (val, oldVal) {
-                    console.log(val.className)
-                    if (val.className == '_File') {
+
+                    if (val ) {
                         this.item.picture = val;
                     }
 
@@ -88,7 +82,7 @@
 
         methods: {
 
-            ...mapActions(['saveBillData', 'setBillData', 'setUpload', 'hideDialog']),
+            ...mapActions(['saveBill', 'setUpload', 'hideDialog']),
             _init(){
 
             },
@@ -97,18 +91,18 @@
                 this.filelist = [];
                 var _vm = this;
 
-                var piture = this.storebilldata.get('picture')
-                if (piture) {
+                var picture = this.storebill.get('picture')
+                if (picture) {
 
                     this.filelist = []
-                    this.setUpload(piture)
+                    this.setUpload(picture)
                     var file = {
-                        name: piture.get("name"),
-                        url: piture.thumbnailURL(200, 200)
+                        name: picture.get("name"),
+                        url: picture.get("url")
                     }
                     this.filelist.push(file)
                 }
-                this.item = Object.assign({}, this.itemdata, this.storebilldata.toJSON())
+                this.item = Object.assign({}, this.itemdata, this.storebill.toJSON())
             },
 
             handleReset() {
@@ -121,7 +115,7 @@
                 var _vm = this;
                 this.$refs.item.validate((valid) => {
                     if (valid) {
-                        _vm.saveBillData(_vm.item).then(
+                        _vm.saveBill(_vm.item).then(
                                 function (results) {
                                     _vm.$store.commit('toggleDialog', false);
                                     _vm.$store.commit('changeRefresh', true);

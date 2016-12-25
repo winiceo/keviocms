@@ -18,7 +18,7 @@
                         <div class="uk-panel-teaser">
 
                             <template v-if='item.get("picture")'>
-                                <img :src="item.get('picture').thumbnailURL(200, 200)" style="height:150px;">
+                                <img :src="item.get('picture').url()" style="height:150px;">
                             </template>
                             <div style="padding: 14px;">
                                 <span>{{item.get('name')}}</span>
@@ -84,13 +84,9 @@
                 selected: -1,
                 item: {
                     name: '',
-
                     url: '',
                     description: ''
                 }
-
-
-
             }
         },
         components: {
@@ -133,7 +129,7 @@
         methods: {
             ...mapActions(['getBillDatas', 'setBillData', 'setUpload']),
             notify () {
-
+                console.error(this.item)
                 this.setBillData(this.item)
                 //this.note = _.assign({}, this.storenote.toJSON())
             },
@@ -162,6 +158,7 @@
                             type: 'success'
                         });
                         _vm.getdata();
+                        _vm.$bus.$emit('billdata_change');
                     },
                     error: function (object, error) {
 
@@ -170,8 +167,11 @@
             },
 
             add: function () {
-                var kobject = AV.Object.createWithoutData('billdata', '')
+
+                var kobject = K.Object.extend("billdata").createWithoutData('')
+
                 this.item = kobject;
+                this.setUpload(null)
                 this.notify()
                 this.dialogVisible = true;
 

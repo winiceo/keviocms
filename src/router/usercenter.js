@@ -8,10 +8,10 @@ export default new Router({
     scrollBehavior: () => ({y: 0}),
     routes: [
         {
-            path: '/dashboard',
+            path: '/',
             name: 'index',
             component: require('modules/user/dashboard'),
-        },{
+        }, {
             path: '/login',
             name: 'login',
             component: require('modules/user/login')
@@ -20,10 +20,19 @@ export default new Router({
             name: 'register',
             component: require('modules/user/register')
         }, {
-            path: '/bill',
-            name: 'bill',
-            component: {main: require('modules/bill/')}
-        }
+            path: '/dashboard',
+            name: 'dashboard',
+            component: require('modules/user/dashboard'),
+            children: [
+                {
+                    path: 'bill',
+                    name: 'bill',
+                    component:  require('modules/bill')
+
+                }
+            ]
+        },
+
 
     ]
 })
